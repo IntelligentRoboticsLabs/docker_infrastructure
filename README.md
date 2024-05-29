@@ -1,4 +1,4 @@
-# SIGSOFT Support for Summer/Winter Schools in Software Engineering
+# Tooling for Summer/Winter Schools in Software Engineering
 ---
 ## Instructors and Students
 ---
@@ -54,16 +54,16 @@ sudo reboot
 
 ## Docker infrastructure
 ### 3. Clone the Repository
-Create a directory for the SIGSOFT environment and clone the repository:
+Create a directory for the school environment and clone the repository:
 ```sh
-mkdir ~/sigsoft && cd ~/sigsoft
+mkdir ~/school && cd ~/school
 git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
 ```
 ### 4. Build the Docker image
 Navigate to the Docker directory and build the Docker image:
 ```sh
-cd ~/sigsoft/docker_infrastructure/docker/
-docker buildx build --platform=linux/amd64 -t sigsoft:v1.0 .
+cd ~/school/docker_infrastructure/docker/
+docker buildx build --platform=linux/amd64 -t school:v1.0 .
 ```
 ### 5. Run Docker image:
 Run the Docker image using the provided script:
