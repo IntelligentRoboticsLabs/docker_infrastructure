@@ -63,7 +63,7 @@ git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
 Navigate to the Docker directory and build the Docker image:
 ```sh
 cd ~/school/docker_infrastructure/docker/
-docker buildx build --platform=linux/amd64 -t school:v1.0 .
+docker buildx build -t school:v1.0 .
 ```
 ### 5. Run Docker image:
 Run the Docker image using the provided script:
