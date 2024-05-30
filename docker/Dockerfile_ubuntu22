@@ -1,5 +1,3 @@
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system
-
 # Copyright 2020-2023 Tiryoh<tiryoh@gmail.com>
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +15,12 @@ FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system
 # This Dockerfile is based on https://github.com/AtsushiSaito/docker-ubuntu-sweb
 # which is released under the Apache-2.0 license.
 
+# Changes * made by Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>
+
+# * Change the base image
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system
 ARG TARGETPLATFORM
-LABEL maintainer="Tiryoh<tiryoh@gmail.com>"
+LABEL maintainer="Tiryoh<tiryoh@gmail.com>, Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -121,8 +123,8 @@ RUN apt-get upgrade -y
 # Enable apt-get completion after running `apt-get update` in the container
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
+# * Add scripts
 COPY ./installation_scripts /installation_scripts
-# RUN dos2unix /installation_scripts/simulator.sh
 RUN dos2unix /installation_scripts/entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/installation_scripts/entrypoint.sh" ]
 

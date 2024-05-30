@@ -1,0 +1,98 @@
+# Copyright 2024 Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#     http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+# This Dockerfile is based on https://github.com/AtsushiSaito/docker-ubuntu-sweb
+# which is released under the Apache-2.0 license.
+
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu20.04 as system
+ARG TARGETPLATFORM
+LABEL maintainer="Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>"
+
+SHELL ["/bin/bash", "-c"]
+
+# Upgrade OS
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Ubuntu Mate desktop
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        ubuntu-mate-desktop && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+# Add Package
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        tigervnc-standalone-server tigervnc-common \
+        supervisor wget curl gosu git sudo python3-pip tini \
+        build-essential vim sudo lsb-release locales \
+        bash-completion tzdata terminator \
+        dos2unix && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+# noVNC and Websockify
+RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
+RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
+RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
+
+# Set remote resize function enabled by default
+RUN sed -i "s/UI.initSetting('resize', 'off');/UI.initSetting('resize', 'remote');/g" /usr/lib/novnc/app/ui.js
+
+# Disable auto update and crash report
+RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades
+RUN sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
+
+# Install Firefox
+RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:mozillateam/ppa -y && \
+    echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
+    echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
+    apt-get update -q && \
+    apt-get install -y \
+    firefox && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install VSCodium
+RUN wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
+    -O /usr/share/keyrings/vscodium-archive-keyring.asc && \
+    echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.asc ] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs vscodium main' \
+    | tee /etc/apt/sources.list.d/vscodium.list && \
+    apt-get update -q && \
+    apt-get install -y codium && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update
+
+RUN apt-get upgrade -y
+
+# Enable apt-get completion after running `apt-get update` in the container
+RUN rm /etc/apt/apt.conf.d/docker-clean
+
+COPY ./installation_scripts /installation_scripts
+RUN dos2unix /installation_scripts/entrypoint.sh
+ENTRYPOINT [ "/bin/bash", "-c", "/installation_scripts/entrypoint.sh" ]
+
+ENV USER ubuntu
+ENV PASSWD ubuntu

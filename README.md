@@ -1,46 +1,29 @@
-# Tooling for Summer/Winter Schools in Software Engineering
+# Tooling for Summer/Winter Schools in Software Engineering for Robotics
 ---
 ## Instructors and Students
 ---
 ## Prerequisites:
 
-### 1. Install Docker Desktop on Ubuntu
+### 1. Install Docker Engine on Ubuntu
 
-First, install Docker Desktop on your Ubuntu system. Follow the official Docker documentation for instructions: [Docker Desktop on Ubuntu](https://docs.docker.com/desktop/install/ubuntu/).
+First, install Docker Enigne on your Ubuntu system. Follow the official Docker documentation for instructions: [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/).
 
-### 2. Install the NVIDIA Container Toolkit
-
-To use GPU resources within your Docker containers, install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Follow these steps:
-
-- Configure the production repository:
+## Docker infrastructure
+### 2. Clone the Repository
+Create a directory for the school environment and clone the repository:
 ```sh
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+mkdir ~/school && cd ~/school
+git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
 ```
 
-- Update the packages list from the repository:
+### 3. Install the NVIDIA Container Toolkit
+
+To use GPU resources within your Docker containers, install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Execute the script:
+
 ```sh
-sudo apt-get update
-``` 
-
-- Install the NVIDIA Container Toolkit packages:
-```sh
-sudo apt-get install -y nvidia-container-toolkit
-``` 
-
-- Configure the container runtime by using the nvidia-ctk command:
-```sh
-sudo nvidia-ctk runtime configure --runtime=docker
-``` 
-
-The nvidia-ctk command modifies the /etc/docker/daemon.json file on the host. The file is updated so that Docker can use the NVIDIA Container Runtime.
-
-- Restart the Docker daemon:
-```sh 
-sudo systemctl restart docker
-``` 
+cd ~/school/docker_infrastructure/docker/
+./nvidia_install.sh
+```
 
 - If you have an NVIDIA card in your system and it is configured with the proper drivers, you can execute the following command to switch between the integrated graphics card and the NVIDIA GPU:
 ```sh 
@@ -52,24 +35,27 @@ sudo prime-select nvidia
 sudo reboot
 ``` 
 
-## Docker infrastructure
-### 3. Clone the Repository
-Create a directory for the school environment and clone the repository:
+### 4. Docker image
+There are two ways to get the Docker image (change XX to select the Ubuntu version 20 or 22):
+- 4.1. Downloading it from DockerHub:
 ```sh
-mkdir ~/school && cd ~/school
-git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
+docker pull jmguerreroh/school:ubuntuXX
 ```
-### 4. Build the Docker image
+
+- 4.2. Building the image:
 Navigate to the Docker directory and build the Docker image:
 ```sh
 cd ~/school/docker_infrastructure/docker/
-docker buildx build -t school:v1.0 .
+docker buildx build -t jmguerreroh/school:ubuntuXX -f Dockerfile_ubuntuXX .
 ```
+
 ### 5. Run Docker image:
-Run the Docker image using the provided script:
+Run the Docker image using the provided script (change XX to select the Ubuntu version 20 or 22):
 ```
-./run_docker.sh
+./run_docker.sh ubuntuXX
 ```
+**Note: If you run this command without having the image, it will attempt to download it from Docker Hub as in step 4.1.
+
 ### 6. Access the Environment
 Open your browser and go to: http://localhost:6080/
 
@@ -77,6 +63,18 @@ You should see the environment running:
 
 ![Environment](images/environment.png)
 
+### 7. Stop and run a container
+Before to stop the docker container. If the container is currently running, to stop it you need to execute (change XX to select the Ubuntu version 20 or 22):
+```sh
+docker stop school_ubuntuXX
+```
+
+This won't delete anything done inside the container unless explicitly removed.
+
+If it's stopped and you want to start it again:
+```sh
+docker start school_ubuntuXX
+```
 ---
 ## Instructors
 ---
@@ -84,11 +82,14 @@ You should see the environment running:
 ### 8. Create an installation script
 Create a custom installation script with the necessary setup for your courses and place it inside the `installation_scripts` folder.
 
-### 9. Follow steps 4 to 7 again
-Build the Docker image and run it as described in steps 4 to 7.
+### 9. Follow steps 4 and 5 again
+Build the Docker image and run it as described in steps 4.2 and 5.
 
 ### 10. Execute Your Script Inside the Docker
 Once the Docker container is running, open a terminal inside the container and execute your script:
 ```sh
 source /installation_scripts/your_script.sh
 ```
+
+### Install inside a running Docker
+You can provide the script on an URL and download it using the Firefox Browser inside the Docker.

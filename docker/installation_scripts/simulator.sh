@@ -1,11 +1,17 @@
 #!/bin/bash
 
+# File: simulator.sh
+# Description: Script to install Tiago simulador for Summerschool on Software Engineering in Robotics 2024
+# Author: Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
+# Date: 30/05/24
+# Institution: Universidad Rey Juan Carlos
+
 # variables for the installation
 export pkg_dir=/home/ubuntu/ros2_ws
 
-# # Update the package list
-# sudo apt-get update
-# sudo apt-get upgrade -y
+# Update the package list
+sudo apt-get update
+sudo apt-get upgrade -y
 
 # Clone the repository with simulator
 git clone -b humble https://github.com/jmguerreroh/tiago_simulator.git $pkg_dir/src/tiago_simulator
