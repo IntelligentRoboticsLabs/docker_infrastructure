@@ -83,7 +83,7 @@ docker start school
 ---
 ## Instructors
 ---
-### Before building the Docker image, you can:
+### 1. Before building the Docker image
 Create an installation script with the necessary setup for your courses and place it inside the `installation_scripts` folder.
 - Follow steps 4.2 and 5 again to build the Docker image.
 - Execute your script inside the Docker container. Once the Docker container is running, open a terminal inside the container and execute your script:
@@ -92,5 +92,5 @@ Create an installation script with the necessary setup for your courses and plac
 source /installation_scripts/your_script.sh
 ```
 
-### With a Docker image built and running
+### 2. With a Docker image built and running
 If the students have a Docker image running, consider providing the script via a URL. The students can then download it using the Firefox browser within the Docker environment.
