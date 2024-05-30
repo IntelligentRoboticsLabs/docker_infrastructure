@@ -15,7 +15,7 @@
 # This Dockerfile is based on https://github.com/AtsushiSaito/docker-ubuntu-sweb
 # which is released under the Apache-2.0 license.
 
-# Changes * made by Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>
+# Changes * made by Jose Miguel Guerrero <josemiguel.guerrero@urjc.es>
 
 # * Change the base image
 FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system

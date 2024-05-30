@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # File: simulator.sh
-# Description: Script to install Tiago simulador for Summerschool on Software Engineering in Robotics 2024
+# Description: Script to install Tiago simulator for Summer School on Software Engineering in Robotics 2024
 # Author: Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
 # Date: 30/05/24
 # Institution: Universidad Rey Juan Carlos
