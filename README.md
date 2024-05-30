@@ -36,8 +36,8 @@ sudo reboot
 ``` 
 
 ### 4. Docker image
-There are two ways to get the Docker image (change XX to select the Ubuntu version 20 or 22):
-- 4.1. Downloading it from Docker Hub
+There are two ways to get the Docker image:
+- 4.1. Downloading it from Docker Hub (**RECOMMENDED**):
 ```sh
 docker pull jmguerreroh/school:ubuntu22
 ```
@@ -66,9 +66,10 @@ You should see the environment running:
 ### 7. Stop and run a container
 - 7.1. If the container is currently running and you need to stop it, follow these steps:
 
--- First, log out of the Docker container environment in your browser
-![logout](images/logout.png)
--- Then, stop the Docker container using the following command
+    - First, log out of the Docker container environment in your browser:
+        ![logout](images/logout.png)
+
+    - Then, stop the Docker container using the following command
 ```sh
 docker stop school
 ```
@@ -82,18 +83,14 @@ docker start school
 ---
 ## Instructors
 ---
+### Before building the Docker image, you can:
+Create an installation script with the necessary setup for your courses and place it inside the `installation_scripts` folder.
+- Follow steps 4.2 and 5 again to build the Docker image.
+- Execute your script inside the Docker container. Once the Docker container is running, open a terminal inside the container and execute your script:
 
-### 8. Create an installation script
-Create a custom installation script with the necessary setup for your courses and place it inside the `installation_scripts` folder.
-
-### 9. Follow steps 4 and 5 again
-Build the Docker image and run it as described in steps 4.2 and 5.
-
-### 10. Execute Your Script Inside the Docker
-Once the Docker container is running, open a terminal inside the container and execute your script:
 ```sh
 source /installation_scripts/your_script.sh
 ```
 
-### Install inside a running Docker
-You can provide the script on an URL and download it using the Firefox Browser inside the Docker.
+### With a Docker image built and running
+If the students have a Docker image running, consider providing the script via a URL. The students can then download it using the Firefox browser within the Docker environment.
