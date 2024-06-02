@@ -18,7 +18,9 @@ git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
 
 ### 3. Install the NVIDIA Container Toolkit
 
-To use GPU resources within your Docker containers, install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Execute the script:
+To use GPU resources within your Docker containers:
+- Install the [NVIDIA drivers](https://ubuntu.com/server/docs/nvidia-drivers-installation).
+- Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Execute the script:
 
 ```sh
 cd ~/school/docker_infrastructure/docker/
@@ -51,9 +53,15 @@ docker buildx build -t jmguerreroh/school:ubuntu22 -f Dockerfile .
 
 ### 5. Run Docker image:
 Run the Docker image using the provided script:
-```
+```sh
 ./run_docker.sh
 ```
+
+If you have any issues with the NVIDIA driver installation, or if the driver execution still does not work, you can run the script using the no-gpu option:
+```sh
+./run_docker.sh no-gpu
+```
+
 **Note: If you run this command without having the image, it will attempt to download it from Docker Hub as in step 4.1.
 
 ### 6. Access the Environment
