@@ -13,7 +13,7 @@ First, install Docker Enigne on your Ubuntu system. Follow the official Docker d
 Create a directory for the school environment and clone the repository:
 ```sh
 mkdir ~/school && cd ~/school
-git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
+git clone https://github.com/SIGSOFT-Summer-Winter-School/docker_infrastructure.git
 ```
 
 ### 3. Install the NVIDIA Container Toolkit
