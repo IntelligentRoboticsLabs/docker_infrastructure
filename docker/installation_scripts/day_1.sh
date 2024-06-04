@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# File: simulator.sh
-# Description: Script to install bump&go for Summer School on Software Engineering in Robotics 2024
-# Author: Francisco Martin (francisco.rico@urjc.es)
-# Date: 30/05/24
-# Institution: Universidad Rey Juan Carlos
-
 # variables for the installation
 export pkg_dir=/home/ubuntu/ros2_ws
 
@@ -14,17 +8,12 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 # Clone the repository 
-git clone -b humble-devel https://github.com/fmrico/book_ros2.git $pkg_dir/src/book_ros2
+cd $pkg_dir/src
+git clone https://github.com/SIGSOFT-Summer-Winter-School/Bump-and-Go-with-Behavior-Trees.git
+git clone https://github.com/BehaviorTree/Groot.git
 
 # Change directory to the cloned repository
-cd $pkg_dir/src/book_ros2
-
-for i in br2_*
-do
-  touch $i/COLCON_IGNORE
-done
-
-rm br2_bt_bumpgo/COLCON_IGNORE
+cd $pkg_dir/src/Bump-and-Go-with-Behavior-Tree
 
 cd $pkg_dir 
 rosdep install --from-paths src --ignore-src -r -y
@@ -37,5 +26,5 @@ echo "source $pkg_dir/install/setup.bash" >> /home/ubuntu/.bashrc
 source /home/ubuntu/.bashrc
 
 echo "================================"
-echo "        DAY 1 INSTALLED         "
+echo "      DAY 1 INSTALLED       "
 echo "================================"
