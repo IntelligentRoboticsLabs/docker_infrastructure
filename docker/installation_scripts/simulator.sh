@@ -14,16 +14,12 @@ sudo apt-get update
 sudo apt-get upgrade -y
 
 # Clone the repository with simulator
-git clone -b humble https://github.com/jmguerreroh/tiago_simulator.git $pkg_dir/src/tiago_simulator
-sed -i "s|  world: aws_house|  world: aws_bookstore|g" "$pkg_dir/src/tiago_simulator/config/params.yaml"
+git clone -b jazzy https://github.com/Juancams/mirte-ros-packages.git $pkg_dir/src/mirte-ros-packages
+git clone -b jazzy https://github.com/Juancams/mirte-gazebo.git $pkg_dir/src/mirte-gazebo
+git clone -b ros2-jazzy https://github.com/Juancams/aws-robomaker-small-warehouse-world.git $pkg_dir/src/aws-robomaker-small-warehouse-world
 
-# Change directory to the cloned repository
-cd $pkg_dir/src 
+touch $pkg_dir/src/mirte-ros-packages/mirte_telemetrix_cpp/COLCON_IGNORE
 
-# import thirdparty repos
-vcs import < tiago_simulator/thirdparty.repos
-
-rm -rf $pkg_dir/src/ThirdParty/aws-robomaker-hospital-world
 cd $pkg_dir 
 rosdep install --from-paths src --ignore-src -r -y
 

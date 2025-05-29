@@ -18,7 +18,7 @@
 # Changes * made by Jose Miguel Guerrero <josemiguel.guerrero@urjc.es>
 
 # * Change the base image
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system
+FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04 as system
 ARG TARGETPLATFORM
 LABEL maintainer="Tiryoh<tiryoh@gmail.com>, Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>"
 
@@ -53,7 +53,7 @@ RUN apt-get update && \
 
 # noVNC and Websockify
 RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
-RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
+RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0 --break-system-packages
 RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
 
 # Set remote resize function enabled by default
@@ -69,7 +69,7 @@ RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:mozillateam/ppa -y && 
     echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
     echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
     apt-get update -q && \
-    apt-get install -y \
+    apt-get install -y --allow-downgrades \
     firefox && \
     apt-get autoclean && \
     apt-get autoremove && \
@@ -87,7 +87,7 @@ RUN wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
     rm -rf /var/lib/apt/lists/*
 
 # Install ROS
-ENV ROS_DISTRO humble
+ENV ROS_DISTRO jazzy
 # desktop or ros-base
 ARG INSTALL_PACKAGE=desktop
 
@@ -111,8 +111,7 @@ RUN rosdep update
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
     apt-get update -q && \
     apt-get install -y \
-    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
-    ros-${ROS_DISTRO}-ros-ign && \
+    ros-${ROS_DISTRO}-ros-gz && \
     rm -rf /var/lib/apt/lists/*; \
     fi
 
