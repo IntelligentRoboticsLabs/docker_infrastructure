@@ -10,12 +10,12 @@
 export pkg_dir=/home/ubuntu/ros2_ws
 
 # Update the package list
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt update
+sudo apt full-upgrade -y
 
 # Clone the repository with simulator
 git clone -b jazzy https://github.com/Juancams/mirte-ros-packages.git $pkg_dir/src/mirte-ros-packages
-git clone -b jazzy https://github.com/Juancams/mirte-gazebo.git $pkg_dir/src/mirte-gazebo
+git clone -b harmonic https://github.com/Juancams/mirte-gazebo.git $pkg_dir/src/mirte-gazebo
 git clone -b ros2-jazzy https://github.com/Juancams/aws-robomaker-small-warehouse-world.git $pkg_dir/src/aws-robomaker-small-warehouse-world
 
 touch $pkg_dir/src/mirte-ros-packages/mirte_telemetrix_cpp/COLCON_IGNORE
