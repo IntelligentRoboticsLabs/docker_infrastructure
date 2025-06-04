@@ -18,7 +18,7 @@
 # Changes * made by Jose Miguel Guerrero <josemiguel.guerrero@urjc.es>
 
 # * Change the base image
-FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04 as system
+FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04 AS system
 ARG TARGETPLATFORM
 LABEL maintainer="Tiryoh<tiryoh@gmail.com>, Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>"
 
