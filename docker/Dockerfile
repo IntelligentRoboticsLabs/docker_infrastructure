@@ -18,42 +18,41 @@
 # Changes * made by Jose Miguel Guerrero <josemiguel.guerrero@urjc.es>
 
 # * Change the base image
-FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04 as system
+FROM nvidia/cuda:12.9.0-cudnn-devel-ubuntu24.04 as system
 ARG TARGETPLATFORM
 LABEL maintainer="Tiryoh<tiryoh@gmail.com>, Jose Miguel Guerrero<josemiguel.guerrero@urjc.es>"
 
 SHELL ["/bin/bash", "-c"]
 
 # Upgrade OS
-RUN apt-get update -q && \
-    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-    apt-get autoclean && \
-    apt-get autoremove && \
+RUN apt update -q && \
+    DEBIAN_FRONTEND=noninteractive apt full-upgrade -y && \
+    apt autoclean && \
+    apt autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Ubuntu Mate desktop
-RUN apt-get update -q && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt update -q && \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
         ubuntu-mate-desktop && \
-    apt-get autoclean && \
-    apt-get autoremove && \
+    apt autoclean && \
+    apt autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 # Add Package
-RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt update && \
+    DEBIAN_FRONTEND=noninteractive apt install -y \
         tigervnc-standalone-server tigervnc-common \
-        supervisor wget curl gosu git sudo python3-pip tini \
+        supervisor wget curl gosu git sudo python3-full python3-pip tini \
         build-essential vim sudo lsb-release locales \
-        bash-completion tzdata terminator \
-        dos2unix && \
-    apt-get autoclean && \
-    apt-get autoremove && \
+        bash-completion tzdata terminator && \
+    apt autoclean && \
+    apt autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 # noVNC and Websockify
 RUN git clone https://github.com/AtsushiSaito/noVNC.git -b add_clipboard_support /usr/lib/novnc
-RUN pip install git+https://github.com/novnc/websockify.git@v0.10.0
+RUN pip install --no-cache-dir --break-system-packages git+https://github.com/novnc/websockify.git@v0.10.0
 RUN ln -s /usr/lib/novnc/vnc.html /usr/lib/novnc/index.html
 
 # Set remote resize function enabled by default
@@ -64,39 +63,43 @@ RUN sed -i 's/Prompt=.*/Prompt=never/' /etc/update-manager/release-upgrades
 RUN sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
 
 # Install Firefox
-RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:mozillateam/ppa -y && \
-    echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox && \
-    echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox && \
-    echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox && \
-    apt-get update -q && \
-    apt-get install -y \
+RUN wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg \
+    -O /etc/apt/keyrings/packages.mozilla.org.asc && \
+    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" \
+    | tee -a /etc/apt/sources.list.d/mozilla-apt.list && \
+    echo "Package: *" | tee /etc/apt/preferences.d/mozilla > /dev/null && \
+    echo "Pin: origin packages.mozilla.org" | tee -a /etc/apt/preferences.d/mozilla > /dev/null && \
+    echo "Pin-Priority: 1000" | tee -a /etc/apt/preferences.d/mozilla > /dev/null && \
+    apt update -q && \
+    apt remove -y firefox && \
+    apt install -y \
     firefox && \
-    apt-get autoclean && \
-    apt-get autoremove && \
+    apt autoclean && \
+    apt autoremove && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # Install VSCodium
 RUN wget https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
     -O /usr/share/keyrings/vscodium-archive-keyring.asc && \
     echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.asc ] https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs vscodium main' \
     | tee /etc/apt/sources.list.d/vscodium.list && \
-    apt-get update -q && \
-    apt-get install -y codium && \
-    apt-get autoclean && \
-    apt-get autoremove && \
+    apt update -q && \
+    apt install -y codium && \
+    apt autoclean && \
+    apt autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 # Install ROS
-ENV ROS_DISTRO humble
+ENV ROS_DISTRO jazzy
 # desktop or ros-base
 ARG INSTALL_PACKAGE=desktop
 
-RUN apt-get update -q && \
-    apt-get install -y curl gnupg2 lsb-release && \
+RUN apt update -q && \
+    apt install -y curl gnupg2 lsb-release && \
     curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
-    apt-get update -q && \
-    apt-get install -y ros-${ROS_DISTRO}-${INSTALL_PACKAGE} \
+    apt update -q && \
+    apt install -y ros-${ROS_DISTRO}-${INSTALL_PACKAGE} \
     python3-argcomplete \
     python3-colcon-common-extensions \
     python3-rosdep python3-vcstool && \
@@ -105,27 +108,17 @@ RUN apt-get update -q && \
 
 RUN rosdep update
 
-# Install simulation package only on amd64
-# Not ready for arm64 for now (July 28th, 2020)
-# https://github.com/Tiryoh/docker-ros2-desktop-vnc/pull/56#issuecomment-1196359860
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-    apt-get update -q && \
-    apt-get install -y \
-    ros-${ROS_DISTRO}-gazebo-ros-pkgs \
-    ros-${ROS_DISTRO}-ros-ign && \
-    rm -rf /var/lib/apt/lists/*; \
-    fi
-
-RUN apt-get update
-
-RUN apt-get upgrade -y
+# Install simulation packages
+RUN apt update -q && \
+    apt install -y \
+    ros-${ROS_DISTRO}-ros-gz && \
+    rm -rf /var/lib/apt/lists/*
 
 # Enable apt-get completion after running `apt-get update` in the container
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # * Add scripts
 COPY ./installation_scripts /installation_scripts
-RUN dos2unix /installation_scripts/entrypoint.sh
 ENTRYPOINT [ "/bin/bash", "-c", "/installation_scripts/entrypoint.sh" ]
 
 ENV USER ubuntu
