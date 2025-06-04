@@ -5,42 +5,53 @@ USER=${USER:-root}
 HOME=/root
 if [ "$USER" != "root" ]; then
     echo "* enable custom user: $USER"
-    useradd --create-home --shell /bin/bash --user-group --groups adm,sudo $USER
+    useradd --create-home --shell /bin/bash --user-group --groups adm,sudo "$USER"
     echo "$USER ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
     if [ -z "$PASSWORD" ]; then
         echo "  set default password to \"ubuntu\""
         PASSWORD=ubuntu
     fi
-    HOME=/home/$USER
+    HOME="/home/$USER"
     echo "$USER:$PASSWORD" | /usr/sbin/chpasswd 2> /dev/null || echo ""
-    cp -r /root/{.config,.gtkrc-2.0,.asoundrc} ${HOME} 2>/dev/null
-    chown -R $USER:$USER ${HOME}
+    cp -r /root/{.config,.gtkrc-2.0,.asoundrc} "$HOME" 2>/dev/null
+    chown -R "$USER:$USER" "$HOME"
     [ -d "/dev/snd" ] && chgrp -R adm /dev/snd
 fi
 
 # VNC password
 VNC_PASSWORD=${PASSWORD:-ubuntu}
 
-mkdir -p $HOME/.vnc
-echo $VNC_PASSWORD | vncpasswd -f > $HOME/.vnc/passwd
-chmod 600 $HOME/.vnc/passwd
-chown -R $USER:$USER $HOME
+mkdir -p "$HOME/.vnc"
+echo "$VNC_PASSWORD" | vncpasswd -f > "$HOME/.vnc/passwd"
+chmod 600 "$HOME/.vnc/passwd"
+chown -R "$USER:$USER" "$HOME"
 sed -i "s/password = WebUtil.getConfigVar('password');/password = '$VNC_PASSWORD'/" /usr/lib/novnc/app/ui.js
 
 # xstartup
-XSTARTUP_PATH=$HOME/.vnc/xstartup
-cat << EOF > $XSTARTUP_PATH
+XSTARTUP_PATH="$HOME/.vnc/xstartup"
+cat << EOF > "$XSTARTUP_PATH"
 #!/bin/sh
 unset DBUS_SESSION_BUS_ADDRESS
 mate-session
 EOF
-chown $USER:$USER $XSTARTUP_PATH
-chmod 755 $XSTARTUP_PATH
+chown "$USER:$USER" "$XSTARTUP_PATH"
+chmod 755 "$XSTARTUP_PATH"
 
 # vncserver launch
-VNCRUN_PATH=$HOME/.vnc/vnc_run.sh
-cat << EOF > $VNCRUN_PATH
+VNCRUN_PATH="$HOME/.vnc/vnc_run.sh"
+cat << EOF > "$VNCRUN_PATH"
 #!/bin/sh
+
+# Workaround for issue when image is created with "docker commit".
+# Thanks to @SaadRana17
+# https://github.com/Tiryoh/docker-ros2-desktop-vnc/issues/131#issuecomment-2184156856
+
+if [ -e /tmp/.X1-lock ]; then
+    rm -f /tmp/.X1-lock
+fi
+if [ -e /tmp/.X11-unix/X1 ]; then
+    rm -f /tmp/.X11-unix/X1
+fi
 
 if [ $(uname -m) = "aarch64" ]; then
     LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver :1 -fg -geometry 1920x1080 -depth 24
@@ -62,20 +73,19 @@ command=gosu '$USER' bash -c "websockify --web=/usr/lib/novnc 80 localhost:5901"
 EOF
 
 # colcon
-BASHRC_PATH=$HOME/.bashrc
-grep -F "source /opt/ros/$ROS_DISTRO/setup.bash" $BASHRC_PATH || echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> $BASHRC_PATH
-grep -F "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" $BASHRC_PATH || echo "source /usr/share/colcon_argcomplete/hook/colcon-argcomplete.bash" >> $BASHRC_PATH
-grep -F "source /usr/share/gazebo/setup.bash" $BASHRC_PATH || echo "source /usr/share/gazebo/setup.bash" >> $BASHRC_PATH
-chown $USER:$USER $BASHRC_PATH
+BASHRC_PATH="$HOME/.bashrc"
+grep -F "source /opt/ros/$ROS_DISTRO/setup.bash" "$BASHRC_PATH" || echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> "$BASHRC_PATH"
+grep -F "export ROS_AUTOMATIC_DISCOVERY_RANGE=" "$BASHRC_PATH" || echo "# export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST" >> "$BASHRC_PATH"
+chown "$USER:$USER" "$BASHRC_PATH"
 
 # Fix rosdep permission
-mkdir -p $HOME/.ros
-cp -r /root/.ros/rosdep $HOME/.ros/rosdep
-chown -R $USER:$USER $HOME/.ros
+mkdir -p "$HOME/.ros"
+cp -r /root/.ros/rosdep "$HOME/.ros/rosdep"
+chown -R "$USER:$USER" "$HOME/.ros"
 
 # Add terminator shortcut
-mkdir -p $HOME/Desktop
-cat << EOF > $HOME/Desktop/terminator.desktop
+mkdir -p "$HOME/Desktop"
+cat << EOF > "$HOME/Desktop/terminator.desktop"
 [Desktop Entry]
 Name=Terminator
 Comment=Multiple terminals in one window
@@ -93,7 +103,7 @@ Name=Open a New Window
 Exec=terminator
 TargetEnvironment=Unity
 EOF
-cat << EOF > $HOME/Desktop/firefox.desktop
+cat << EOF > "$HOME/Desktop/firefox.desktop"
 [Desktop Entry]
 Version=1.0
 Name=Firefox Web Browser
@@ -163,7 +173,7 @@ Comment[nb]=Surf på nettet
 Comment[nl]=Verken het internet
 Comment[nn]=Surf på nettet
 Comment[no]=Surf på nettet
-Comment[pl]=Przeglądanie stron WWW 
+Comment[pl]=Przeglądanie stron WWW
 Comment[pt]=Navegue na Internet
 Comment[pt_BR]=Navegue na Internet
 Comment[ro]=Navigați pe Internet
@@ -235,7 +245,7 @@ Keywords[it]=Internet;WWW;Browser;Web;Navigatore
 Keywords[is]=Internet;WWW;Vafri;Vefur;Netvafri;Flakk
 Keywords[ja]=Internet;WWW;Web;インターネット;ブラウザ;ウェブ;エクスプローラ
 Keywords[nb]=Internett;WWW;Nettleser;Explorer;Web;Browser;Nettside
-Keywords[nl]=Internet;WWW;Browser;Web;Explorer;Verkenner;Website;Surfen;Online 
+Keywords[nl]=Internet;WWW;Browser;Web;Explorer;Verkenner;Website;Surfen;Online
 Keywords[pt]=Internet;WWW;Browser;Web;Explorador;Navegador
 Keywords[pt_BR]=Internet;WWW;Browser;Web;Explorador;Navegador
 Keywords[ru]=Internet;WWW;Browser;Web;Explorer;интернет;браузер;веб;файрфокс;огнелис
@@ -287,7 +297,7 @@ Name[ru]=Новое окно
 Name[sk]=Otvoriť nové okno
 Name[sl]=Odpri novo okno
 Name[sv]=Öppna ett nytt fönster
-Name[tr]=Yeni pencere aç 
+Name[tr]=Yeni pencere aç
 Name[ug]=يېڭى كۆزنەك ئېچىش
 Name[uk]=Відкрити нове вікно
 Name[vi]=Mở cửa sổ mới
@@ -317,7 +327,7 @@ Name[uk]=Відкрити нове вікно у потайливому режи
 Name[zh_TW]=開啟新隱私瀏覽視窗
 Exec=firefox -private-window
 EOF
-cat << EOF > $HOME/Desktop/codium.desktop
+cat << EOF > "$HOME/Desktop/codium.desktop"
 [Desktop Entry]
 Name=VSCodium
 Comment=Code Editing. Redefined.
@@ -337,17 +347,19 @@ Name=New Empty Window
 Exec=/usr/share/codium/codium --new-window %F
 Icon=vscodium
 EOF
-chown -R $USER:$USER $HOME/Desktop
+chown -R "$USER:$USER" "$HOME/Desktop"
+
+echo "============================================================================================"
+echo "Launched docker container."
+echo -e 'Open \e]8;;http://127.0.0.1:6080\e\\http://127.0.0.1:6080\e]8;;\e\\ via web browser.'
+echo ""
+echo "NOTE 1: Default user is \"$USER\", password is \"$PASSWORD\"."
+echo "NOTE 2: --security-opt seccomp=unconfined flag is required to launch Ubuntu Jammy/Noble based image on some environment."
+echo -e 'See \e]8;;https://github.com/Tiryoh/docker-ros2-desktop-vnc/pull/56\e\\https://github.com/Tiryoh/docker-ros2-desktop-vnc/pull/56\e]8;;\e\\'
+echo "============================================================================================"
 
 # clearup
 PASSWORD=
 VNC_PASSWORD=
-
-echo "============================================================================================"
-echo "NOTE 1: --security-opt seccomp=unconfined flag is required to launch Ubuntu Jammy based image."
-echo -e 'See \e]8;;https://github.com/Tiryoh/docker-ros2-desktop-vnc/pull/56\e\\https://github.com/Tiryoh/docker-ros2-desktop-vnc/pull/56\e]8;;\e\\'
-echo "NOTE 2: Before stopping to commit docker container to new docker image, log out first."
-echo -e 'See \e]8;;https://github.com/Tiryoh/docker-ros2-desktop-vnc/issue/131\e\\https://github.com/Tiryoh/docker-ros2-desktop-vnc/issue/131\e]8;;\e\\'
-echo "============================================================================================"
 
 exec /bin/tini -- supervisord -n -c /etc/supervisor/supervisord.conf
