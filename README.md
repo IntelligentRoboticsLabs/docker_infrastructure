@@ -29,6 +29,7 @@ If you are using Docker Desktop, you only need to **pull the image** by searchin
 ```bash
 docker pull jmguerreroh/school:ubuntu24
 ```
+When running the image, set 6080 as the host port in the Docker settings. Once it's running, continue with Step 6.
 
 ### 2. Clone the repository
 Create a directory for the school environment and clone the repository:
