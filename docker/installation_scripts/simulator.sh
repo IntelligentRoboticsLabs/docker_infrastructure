@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # File: simulator.sh
-# Description: Script to install Tiago simulator for Summer School on Software Engineering in Robotics 2024
+# Description: Script to install Mirte simulator for Summer School on Software Engineering in Robotics 2025
 # Author: Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
-# Date: 30/05/24
+# Date: 05/06/25
 # Institution: Universidad Rey Juan Carlos
 
 # variables for the installation

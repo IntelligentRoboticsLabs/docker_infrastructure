@@ -41,25 +41,20 @@ sudo reboot
 There are two ways to get the Docker image:
 - 4.1. Downloading it from Docker Hub (**RECOMMENDED**):
 ```sh
-docker pull jmguerreroh/school:ubuntu22
+docker pull jmguerreroh/school:ubuntu24
 ```
 
 - 4.2. Building the image
 Navigate to the Docker directory and build the Docker image:
 ```sh
 cd ~/school/docker_infrastructure/docker/
-docker buildx build -t jmguerreroh/school:ubuntu22 -f Dockerfile .
+sudo docker buildx build --platform=linux/amd64  -t jmguerreroh/school:ubuntu24 -f Dockerfile .
 ```
 
 ### 5. Run Docker image:
 Run the Docker image using the provided script:
 ```sh
 ./run_docker.sh
-```
-
-If you have any issues with the NVIDIA driver installation, or if the driver execution still does not work, you can run the script using the no-gpu option:
-```sh
-./run_docker.sh no-gpu
 ```
 
 **Note: If you run this command without having the image, it will attempt to download it from Docker Hub as in step 4.1.
