@@ -27,16 +27,16 @@ SHELL ["/bin/bash", "-c"]
 # Upgrade OS
 RUN apt update -q && \
     DEBIAN_FRONTEND=noninteractive apt full-upgrade -y && \
-    apt autoclean && \
-    apt autoremove && \
+    apt autoclean -y && \
+    apt autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Ubuntu Mate desktop
 RUN apt update -q && \
     DEBIAN_FRONTEND=noninteractive apt install -y \
         ubuntu-mate-desktop && \
-    apt autoclean && \
-    apt autoremove && \
+    apt autoclean -y && \
+    apt autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Add Package
@@ -46,8 +46,8 @@ RUN apt update && \
         supervisor wget curl gosu git sudo python3-full python3-pip tini \
         build-essential vim sudo lsb-release locales \
         bash-completion tzdata terminator && \
-    apt autoclean && \
-    apt autoremove && \
+    apt autoclean -y && \
+    apt autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # noVNC and Websockify
@@ -119,6 +119,7 @@ RUN rm /etc/apt/apt.conf.d/docker-clean
 
 # * Add scripts
 COPY ./installation_scripts /installation_scripts
+COPY ./examples /examples
 ENTRYPOINT [ "/bin/bash", "-c", "/installation_scripts/entrypoint.sh" ]
 
 ENV USER ubuntu
