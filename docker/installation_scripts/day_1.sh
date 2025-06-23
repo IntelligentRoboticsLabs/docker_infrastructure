@@ -7,7 +7,7 @@
 # Institution: Universidad Rey Juan Carlos
 
 # variables for the installation
-export pkg_dir=/home/ubuntu/ros2_ws
+export pkg_dir=~/ros2_ws
 
 # Clone the repository with simulator
 cp -r /examples/* $pkg_dir/src/
@@ -17,7 +17,7 @@ cd $pkg_dir
 # Compile the code
 colcon build --symlink-install
 
-source /home/ubuntu/.bashrc
+source ~/.bashrc
 
 echo "================================="
 echo "  EXAMPLES & EXERCISE INSTALLED  "

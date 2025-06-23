@@ -7,7 +7,7 @@
 # Institution: Universidad Rey Juan Carlos
 
 # variables for the installation
-export pkg_dir=/home/ubuntu/ros2_ws
+export pkg_dir=~/ros2_ws
 
 # Update the package list
 sudo apt update
@@ -27,8 +27,8 @@ rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 
 # Run any additional commands or scripts as needed
-echo "source $pkg_dir/install/setup.bash" >> /home/ubuntu/.bashrc
-source /home/ubuntu/.bashrc
+echo "source $pkg_dir/install/setup.bash" >> ~/.bashrc
+source ~/.bashrc
 
 echo "================================"
 echo "      SIMULATOR INSTALLED       "
