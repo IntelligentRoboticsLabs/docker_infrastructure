@@ -8,14 +8,23 @@
 
 First, install Docker Enigne on your Ubuntu system. Follow the official Docker documentation for instructions: [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/).
 
-## Docker infrastructure
 ### 2. Clone the Repository
 Create a directory for the school environment and clone the repository:
 ```sh
-mkdir ~/school && cd ~/school
-git clone https://github.com/SIGSOFT-Summer-Winter-School/docker_infrastructure.git
+mkdir ~/ros2_ws && cd ~/ros2_ws
+git clone https://github.com/IntelligentRoboticsLabs/docker_infrastructure.git
 ```
 
+If you are a Linux user and prefer to run the setup locally without Docker, follow these steps:
+```sh
+cd ~/ros2_ws
+./docker_infrastructure/docker/installation_scripts/simulator.sh
+```
+This script will install the necessary dependencies and set up the simulation and development environment for the course.
+
+If you're using a different operating system or prefer an isolated environment, continue with the Docker-based installation instructions provided in the next step of this guide.
+
+## Docker infrastructure
 ### 3. Install the NVIDIA Container Toolkit
 
 To use GPU resources within your Docker containers:
@@ -23,7 +32,7 @@ To use GPU resources within your Docker containers:
 - Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html). Execute the script:
 
 ```sh
-cd ~/school/docker_infrastructure/docker/
+cd ~/ros2_ws/docker_infrastructure/docker/
 ./nvidia_install.sh
 ```
 
@@ -47,7 +56,7 @@ docker pull jmguerreroh/school:ubuntu24
 - 4.2. Building the image
 Navigate to the Docker directory and build the Docker image:
 ```sh
-cd ~/school/docker_infrastructure/docker/
+cd ~/ros2_ws/docker_infrastructure/docker/
 sudo docker buildx build --platform=linux/amd64  -t jmguerreroh/school:ubuntu24 -f Dockerfile .
 ```
 

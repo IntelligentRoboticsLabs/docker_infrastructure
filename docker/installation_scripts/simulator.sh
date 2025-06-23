@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # File: simulator.sh
-# Description: Script to install Mirte simulator for Summer School on Software Engineering in Robotics 2025
+# Description: Script to install Mirte simulator and exercises for Summer School on Software Engineering in Robotics 2025
 # Author: Jose Miguel Guerrero (josemiguel.guerrero@urjc.es)
-# Date: 05/06/25
+# Date: 23/06/25
 # Institution: Universidad Rey Juan Carlos
 
 # variables for the installation
@@ -20,6 +20,9 @@ git clone -b ros2-jazzy https://github.com/Juancams/aws-robomaker-small-warehous
 
 touch $pkg_dir/src/mirte-ros-packages/mirte_telemetrix_cpp/COLCON_IGNORE
 
+# Clone the example
+cp -r ../examples/* $pkg_dir/src/
+
 cd $pkg_dir 
 rosdep install --from-paths src --ignore-src -r -y
 
@@ -30,7 +33,6 @@ colcon build --symlink-install
 echo "source $pkg_dir/install/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 
-echo "================================"
-echo "      SIMULATOR INSTALLED       "
-echo "================================"
-
+echo "====================================================="
+echo "      SIMULATOR, EXAMPLES & EXERCISE INSTALLED       "
+echo "====================================================="
