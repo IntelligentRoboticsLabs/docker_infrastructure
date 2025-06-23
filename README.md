@@ -25,6 +25,11 @@ cd ~/ros2_ws
  - Ubuntu users: Follow the official Docker installation guide for Ubuntu: [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
  - Windows/macOS users (or Ubuntu with GUI): Install Docker Desktop: [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+If you are using Docker Desktop, you only need to **pull the image** by searching for `jmguerreroh/school:ubuntu24` in Docker Desktop’s search interface or by running the following command in the Terminal:
+```bash
+docker pull jmguerreroh/school:ubuntu24
+```
+
 ### 2. Clone the repository
 Create a directory for the school environment and clone the repository:
 ```sh
