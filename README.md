@@ -8,16 +8,21 @@ This guide helps students and instructors set up the development and simulation 
  - Instructors: Customize the base Docker image with your own installation scripts for specific content.
 
 ---
+Please, choose one of the following options:
+- Option 1: Local installation (Linux only)
+- Option 2: Docker environment
+---
 
 
-## Local installation (Linux only)
-If you're on Linux and prefer not to use Docker, you can run the installation script directly. This installs all dependencies locally:
+# Option 1: Local installation (Linux only)
+If you're using Linux and prefer to install dependencies without Docker, you can install [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html) and run the provided setup script to configure the simulator locally.
 ```sh
 cd ~/ros2_ws
 ./docker_infrastructure/docker/installation_scripts/simulator.sh
 ```
 
 ---
+# Option 2: Docker environment
 
 ## Prerequisites:
 
