@@ -9,13 +9,13 @@ This guide helps students and instructors set up the development and simulation 
 
 ---
 Please, choose one of the following options:
-- Option 1: Local installation (Linux only)
+- Option 1: Local installation (Linux only, Ubuntu 24.04)
 - Option 2: Docker environment
 ---
 
 
-# Option 1: Local installation (Linux only)
-If you're using Linux and prefer to install dependencies without Docker, you can install [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html) and run the provided setup script to configure the simulator locally.
+# Option 1: Local installation (Linux only, Ubuntu 24.04)
+If you're using Ubuntu 24.04 and prefer to install dependencies without Docker, you can install [ROS 2 Jazzy](https://docs.ros.org/en/jazzy/index.html) and run the provided setup script to configure the simulator locally.
 ```sh
 cd ~/ros2_ws
 ./docker_infrastructure/docker/installation_scripts/simulator.sh
