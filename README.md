@@ -81,6 +81,7 @@ sudo docker buildx build --platform=linux/amd64  -t jmguerreroh/school:ubuntu24 
 ### 5. Run Docker image:
 Run the Docker image using the provided script:
 ```sh
+cd ~/ros2_ws/docker_infrastructure/docker/
 ./run_docker.sh
 ```
 
